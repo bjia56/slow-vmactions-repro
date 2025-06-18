@@ -14,7 +14,7 @@ jobs:
       matrix:
         iteration: [1, 2, 3, 4, 5]
         vmactions: [v1.2.0, v1.2.1]
-        osrelease: [13.3, 14.2, 15.0]
+        osrelease: ["13.3", "14.2", "15.0"]
 
     steps:
       - name: Boot VM
