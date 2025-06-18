@@ -1,0 +1,33 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  freebsd:
+    name: freebsd-vm@${{ matrix.vmactions }} (${{ matrix.iteration }})
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        iteration: [1, 2, 3, 4, 5]
+        vmactions: [v1.2.0, v1.2.1]
+
+    steps:
+      - name: Boot VM
+        uses: vmactions/freebsd-vm@${{ matrix.vmactions }}
+        with:
+          arch: aarch64
+          prepare: |
+            pkg install -y wget gmake
+
+      - name: Build
+        shell: freebsd {0}
+        run: |
+          wget https://github.com/bjia56/build-dependencies/releases/download/portable-python/ncurses-6.4.tar.gz
+          tar -xf ncurses-6.4.tar.gz
+          cd ncurses-6.4
+          ./configure
+          gmake -j$(nproc)
